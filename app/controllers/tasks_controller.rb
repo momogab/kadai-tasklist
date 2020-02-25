@@ -1,7 +1,6 @@
 class TasksController < ApplicationController
-  before_action :require_user_logged_in, only: [:index, :new, :show, :edit, :create, :update]
-  before_action :correct_user, only: [:show, :edit, :destroy]
-  before_action :set_task, only: [:show, :edit, :update, :destroy]
+  before_action :require_user_logged_in
+  before_action :correct_user, only: [:show, :edit, :update, :destroy]
   
   def index
     if logged_in?
@@ -11,7 +10,6 @@ class TasksController < ApplicationController
   end
 
   def show
-    @task = Task.find(params[:id])
   end
 
   def new
@@ -26,12 +24,11 @@ class TasksController < ApplicationController
       redirect_to root_url
     else
       flash.now[:danger] = 'Task が投稿されませんでした'
-      render :index
+      render :new
     end
   end
 
   def edit
-    @task = Task.find(params[:id])
   end
 
   def update
@@ -52,11 +49,6 @@ class TasksController < ApplicationController
   
   private
   
-  #id検索の共通化
-  def set_task
-    @task = Task.find(params[:id])
-  end
-
   # Strong Parameter
   def task_params
     params.require(:task).permit(:content, :status)
